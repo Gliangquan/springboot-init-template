@@ -8,7 +8,6 @@ import lombok.Data;
  * 已登录用户视图（脱敏）
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  **/
 @Data
 public class LoginUserVO implements Serializable {

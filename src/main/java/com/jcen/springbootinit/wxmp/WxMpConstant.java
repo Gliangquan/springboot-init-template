@@ -4,7 +4,6 @@ package com.jcen.springbootinit.wxmp;
  * 微信公众号相关常量
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  **/
 public class WxMpConstant {
 

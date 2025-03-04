@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
  * 文件接口
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  */
 @RestController
 @RequestMapping("/file")

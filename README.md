@@ -1,7 +1,6 @@
 # SpringBoot 项目初始模板-(改编自用)
 
 > 作者：[小梁](https://github.com/Gliangquan)
-> 仅分享于 [Gliangquan](https://www.gliangquan.github.io)
 
 ## 模板特点
 ### 主流框架 & 特性

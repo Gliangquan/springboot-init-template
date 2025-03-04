@@ -21,7 +21,6 @@ import javax.servlet.http.HttpServletRequest;
  * 权限校验 AOP
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  */
 @Aspect
 @Component

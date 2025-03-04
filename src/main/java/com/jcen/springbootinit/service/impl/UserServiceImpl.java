@@ -31,7 +31,6 @@ import org.springframework.util.DigestUtils;
  * 用户服务实现
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  */
 @Service
 @Slf4j

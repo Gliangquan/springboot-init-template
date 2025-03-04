@@ -7,7 +7,6 @@ import lombok.Data;
  * 删除请求
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  */
 @Data
 public class DeleteRequest implements Serializable {

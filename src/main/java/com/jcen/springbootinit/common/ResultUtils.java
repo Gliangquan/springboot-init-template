@@ -4,7 +4,6 @@ package com.jcen.springbootinit.common;
  * 返回工具类
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  */
 public class ResultUtils {
 

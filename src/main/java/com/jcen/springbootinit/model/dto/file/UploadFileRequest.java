@@ -7,7 +7,6 @@ import lombok.Data;
  * 文件上传请求
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  */
 @Data
 public class UploadFileRequest implements Serializable {

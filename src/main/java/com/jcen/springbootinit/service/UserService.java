@@ -14,7 +14,6 @@ import me.chanjar.weixin.common.bean.WxOAuth2UserInfo;
  * 用户服务
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  */
 public interface UserService extends IService<User> {
 
