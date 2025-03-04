@@ -1,6 +1,5 @@
 # 数据库初始化
 # @author <a href="https://github.com/Gliangquan">小梁</a>
-# @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
 
 -- 创建库
 create database if not exists springboot_init_template;

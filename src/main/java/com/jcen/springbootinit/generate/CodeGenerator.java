@@ -6,87 +6,120 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Writer;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.util.*;
 
 /**
  * 代码生成器
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.code-nav.cn">编程导航学习圈</a>
  */
 public class CodeGenerator {
 
+    // TODO 1. 数据库连接配置
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/springboot_init_template";
+    private static final String DB_USERNAME = "root";
+    private static final String DB_PASSWORD = "liangquan0302";
+
+    // 生成路径配置
+    private static final String PROJECT_PATH = System.getProperty("user.dir");
+    private static final String TEMPLATE_DIR = PROJECT_PATH + File.separator + "src/main/resources/templates";
+
     /**
-     * 用法：修改生成参数和生成路径，注释掉不需要的生成逻辑，然后运行即可
-     *
-     * @param args
-     * @throws TemplateException
-     * @throws IOException
+     * 将数据库字段类型转换为 jdbcType
      */
-    public static void main(String[] args) throws TemplateException, IOException {
-        // 指定生成参数
-        String packageName = "com.jcen.springbootinit";
-        String dataName = "用户评论";
-        String dataKey = "userComment";
-        String upperDataKey = "UserComment";
+    private static String toJdbcType(String columnType) {
+        if (columnType == null) {
+            return "VARCHAR"; // 默认类型
+        }
+        // 统一转换为大写，方便比较
+        columnType = columnType.toUpperCase();
+        switch (columnType) {
+            case "TEXT":
+                return "VARCHAR";
+            case "INT":
+            case "INTEGER":
+                return "BIGINT";
+            case "DATETIME":
+                return "TIMESTAMP";
+            case "TINYINT":
+                return "BOOLEAN";
+            case "DOUBLE":
+            case "FLOAT":
+                return "DECIMAL";
+            default:
+                return columnType; // 其他类型保持原样
+        }
+    }
 
-        // 封装生成参数
-        Map<String, Object> dataModel = new HashMap<>();
-        dataModel.put("packageName", packageName);
-        dataModel.put("dataName", dataName);
-        dataModel.put("dataKey", dataKey);
-        dataModel.put("upperDataKey", upperDataKey);
+    /**
+     * 将下划线命名转换为驼峰命名（如 user_name -> userName）
+     */
+    private static String toCamelCase(String columnName) {
+        StringBuilder result = new StringBuilder();
+        boolean nextUpper = false;
+        for (int i = 0; i < columnName.length(); i++) {
+            char ch = columnName.charAt(i);
+            if (ch == '_') {
+                nextUpper = true;
+            } else {
+                if (nextUpper) {
+                    result.append(Character.toUpperCase(ch));
+                    nextUpper = false;
+                } else {
+                    result.append(ch);
+                }
+            }
+        }
+        return result.toString();
+    }
 
-        // 生成路径默认值
-        String projectPath = System.getProperty("user.dir");
-        // 参考路径，可以自己调整下面的 outputPath
-        String inputPath = projectPath + File.separator + "src/main/resources/templates/模板名称.java.ftl";
-        String outputPath = String.format("%s/generator/包名/%s类后缀.java", projectPath, upperDataKey);
+    /**
+     * 获取表的字段信息
+     */
+    public static List<Map<String, String>> getTableColumns(String tableName) throws Exception {
+        List<Map<String, String>> columns = new ArrayList<>();
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
+            DatabaseMetaData metaData = connection.getMetaData();
 
-        // 1、生成 Controller
-        // 指定生成路径
-        inputPath = projectPath + File.separator + "src/main/resources/templates/TemplateController.java.ftl";
-        outputPath = String.format("%s/generator/controller/%sController.java", projectPath, upperDataKey);
-        // 生成
-        doGenerate(inputPath, outputPath, dataModel);
-        System.out.println("生成 Controller 成功，文件路径：" + outputPath);
+            // 获取所有字段信息
+            try (ResultSet columnsResultSet = metaData.getColumns(null, null, tableName, null)) {
+                while (columnsResultSet.next()) {
+                    Map<String, String> column = new HashMap<>();
+                    String columnName = columnsResultSet.getString("COLUMN_NAME"); // 数据库字段名
+                    String columnType = columnsResultSet.getString("TYPE_NAME"); // 数据库字段类型
+                    column.put("columnName", columnName); // 数据库字段名称
+                    column.put("fieldName", toCamelCase(columnName)); // 实体类字段名称（驼峰命名）
+                    column.put("columnType", columnType); // 数据库字段类型
+                    column.put("jdbcType", toJdbcType(columnType)); // 映射后的 jdbcType
+                    column.put("columnSize", columnsResultSet.getString("COLUMN_SIZE")); // 数据库字段长度
+                    column.put("columnComment", columnsResultSet.getString("REMARKS")); // 数据库字段注释
+                    column.put("isPrimaryKey", "false"); // 默认设置为非主键
+                    columns.add(column);
+                }
+            }
 
-        // 2、生成 Service 接口和实现类
-        // 生成 Service 接口
-        inputPath = projectPath + File.separator + "src/main/resources/templates/TemplateService.java.ftl";
-        outputPath = String.format("%s/generator/service/%sService.java", projectPath, upperDataKey);
-        doGenerate(inputPath, outputPath, dataModel);
-        System.out.println("生成 Service 接口成功，文件路径：" + outputPath);
-        // 生成 Service 实现类
-        inputPath = projectPath + File.separator + "src/main/resources/templates/TemplateServiceImpl.java.ftl";
-        outputPath = String.format("%s/generator/service/impl/%sServiceImpl.java", projectPath, upperDataKey);
-        doGenerate(inputPath, outputPath, dataModel);
-        System.out.println("生成 Service 实现类成功，文件路径：" + outputPath);
-
-        // 3、生成数据模型封装类（包括 DTO 和 VO）
-        // 生成 DTO
-        inputPath = projectPath + File.separator + "src/main/resources/templates/model/TemplateAddRequest.java.ftl";
-        outputPath = String.format("%s/generator/model/dto/%sAddRequest.java", projectPath, upperDataKey);
-        doGenerate(inputPath, outputPath, dataModel);
-        inputPath = projectPath + File.separator + "src/main/resources/templates/model/TemplateQueryRequest.java.ftl";
-        outputPath = String.format("%s/generator/model/dto/%sQueryRequest.java", projectPath, upperDataKey);
-        doGenerate(inputPath, outputPath, dataModel);
-        inputPath = projectPath + File.separator + "src/main/resources/templates/model/TemplateEditRequest.java.ftl";
-        outputPath = String.format("%s/generator/model/dto/%sEditRequest.java", projectPath, upperDataKey);
-        doGenerate(inputPath, outputPath, dataModel);
-        inputPath = projectPath + File.separator + "src/main/resources/templates/model/TemplateUpdateRequest.java.ftl";
-        outputPath = String.format("%s/generator/model/dto/%sUpdateRequest.java", projectPath, upperDataKey);
-        doGenerate(inputPath, outputPath, dataModel);
-        System.out.println("生成 DTO 成功，文件路径：" + outputPath);
-        // 生成 VO
-        inputPath = projectPath + File.separator + "src/main/resources/templates/model/TemplateVO.java.ftl";
-        outputPath = String.format("%s/generator/model/vo/%sVO.java", projectPath, upperDataKey);
-        doGenerate(inputPath, outputPath, dataModel);
-        System.out.println("生成 VO 成功，文件路径：" + outputPath);
+            // 获取主键信息
+            try (ResultSet primaryKeysResultSet = metaData.getPrimaryKeys(null, null, tableName)) {
+                while (primaryKeysResultSet.next()) {
+                    String primaryKeyColumnName = primaryKeysResultSet.getString("COLUMN_NAME");
+                    // 标记主键
+                    for (Map<String, String> column : columns) {
+                        if (primaryKeyColumnName.equals(column.get("columnName"))) {
+                            column.put("isPrimaryKey", "true");
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return columns;
     }
 
     /**
@@ -95,18 +128,10 @@ public class CodeGenerator {
      * @param inputPath  模板文件输入路径
      * @param outputPath 输出路径
      * @param model      数据模型
-     * @throws IOException
-     * @throws TemplateException
      */
     public static void doGenerate(String inputPath, String outputPath, Object model) throws IOException, TemplateException {
-        // new 出 Configuration 对象，参数为 FreeMarker 版本号
         Configuration configuration = new Configuration(Configuration.VERSION_2_3_31);
-
-        // 指定模板文件所在的路径
-        File templateDir = new File(inputPath).getParentFile();
-        configuration.setDirectoryForTemplateLoading(templateDir);
-
-        // 设置模板文件使用的字符集
+        configuration.setDirectoryForTemplateLoading(new File(TEMPLATE_DIR));
         configuration.setDefaultEncoding("utf-8");
 
         // 创建模板对象，加载指定模板
@@ -119,10 +144,91 @@ public class CodeGenerator {
         }
 
         // 生成
-        Writer out = new FileWriter(outputPath);
-        template.process(model, out);
+        try (Writer out = new FileWriter(outputPath)) {
+            template.process(model, out);
+        }
+    }
 
-        // 生成文件后别忘了关闭哦
-        out.close();
+    /**
+     * 生成代码
+     *
+     * @param packageName   包路径
+     * @param dataName      中文名称
+     * @param dataKey       文件夹名称
+     * @param upperDataKey  实体类名称
+     * @param tableName     表名
+     */
+    public static void generateCode(String packageName, String dataName, String dataKey, String upperDataKey, String tableName) {
+        Map<String, Object> dataModel = new HashMap<>();
+        dataModel.put("packageName", packageName);
+        dataModel.put("dataName", dataName);
+        dataModel.put("dataKey", dataKey);
+        dataModel.put("upperDataKey", upperDataKey);
+        dataModel.put("author", "liangquan0302");
+        dataModel.put("createDate", new Date());
+
+        try {
+            List<Map<String, String>> columns = getTableColumns(tableName);
+            dataModel.put("columns", columns);
+            dataModel.put("tableName", tableName);
+
+            // 生成 Controller
+            generateFile("TemplateController.java.ftl", String.format("%s/generator/controller/%sController.java", PROJECT_PATH, upperDataKey), dataModel);
+
+            // 生成 Service 接口和实现类
+            generateFile("TemplateService.java.ftl", String.format("%s/generator/service/%sService.java", PROJECT_PATH, upperDataKey), dataModel);
+            generateFile("TemplateServiceImpl.java.ftl", String.format("%s/generator/service/impl/%sServiceImpl.java", PROJECT_PATH, upperDataKey), dataModel);
+
+            // 生成 Entity
+            generateFile("TemplateEntity.java.ftl", String.format("%s/generator/model/entity/%s.java", PROJECT_PATH, upperDataKey), dataModel);
+
+            // 生成 VO
+            generateFile("TemplateVO.java.ftl", String.format("%s/generator/model/vo/%sVO.java", PROJECT_PATH, upperDataKey), dataModel);
+
+            // 生成 DTO
+            generateFile("TemplateAddRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sAddRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
+            generateFile("TemplateQueryRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sQueryRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
+            generateFile("TemplateEditRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sEditRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
+            generateFile("TemplateUpdateRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sUpdateRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
+
+            // 生成 Mapper 接口
+            generateFile("TemplateMapper.java.ftl", String.format("%s/generator/mapper/%sMapper.java", PROJECT_PATH, upperDataKey), dataModel);
+
+            // 生成 Mapper XML 文件
+            generateFile("TemplateMapper.xml.ftl", String.format("%s/generator/mapper/%sMapper.xml", PROJECT_PATH, upperDataKey), dataModel);
+
+        } catch (Exception e) {
+            System.err.println("生成代码失败：" + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 生成单个文件
+     *
+     * @param templateName 模板名称
+     * @param outputPath   输出路径
+     * @param dataModel    数据模型
+     */
+    private static void generateFile(String templateName, String outputPath, Map<String, Object> dataModel) {
+        try {
+            doGenerate(TEMPLATE_DIR + File.separator + templateName, outputPath, dataModel);
+            System.out.println("生成文件成功，路径：" + outputPath);
+        } catch (Exception e) {
+            System.err.println("生成文件失败：" + outputPath);
+            e.printStackTrace();
+        }
+    }
+
+    public static void main(String[] args) {
+        // TODO 2. 指定生成参数
+        String packageName = "com.jcen.springbootinit";  // 包路径
+        String dataName = "用户评论";  // 中文名称
+        String dataKey = "post";  // 文件夹名称
+        String upperDataKey = "Post";  // 实体类名称
+        String tableName = "post";  // 表名
+
+        // 生成代码
+        generateCode(packageName, dataName, dataKey, upperDataKey, tableName);
     }
 }

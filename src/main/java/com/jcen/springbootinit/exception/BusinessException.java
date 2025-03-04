@@ -6,7 +6,6 @@ import com.jcen.springbootinit.common.ErrorCode;
  * 自定义异常类
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  */
 public class BusinessException extends RuntimeException {
 

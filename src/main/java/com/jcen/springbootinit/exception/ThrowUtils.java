@@ -6,7 +6,6 @@ import com.jcen.springbootinit.common.ErrorCode;
  * 抛异常工具类
  *
  * @author <a href="https://github.com/Gliangquan">小梁</a>
- * @from <a href="https://www.gliangquan.github.io">Gliangquan</a>
  */
 public class ThrowUtils {
 
