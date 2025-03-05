@@ -5,6 +5,7 @@ import ${packageName}.model.dto.${dataKey}.${upperDataKey}QueryRequest;
 import ${packageName}.model.entity.${upperDataKey};
 import com.baomidou.mybatisplus.extension.service.IService;
 import ${packageName}.model.vo.${upperDataKey}VO;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.List;
 
@@ -17,7 +18,7 @@ public interface ${upperDataKey}Service extends IService<${upperDataKey}> {
 
     ${upperDataKey}VO get${upperDataKey}VO(${upperDataKey} ${dataKey});
 
-    List<${upperDataKey}VO> get${upperDataKey}VO(List<${upperDataKey}> ${dataKey}List);
+    Page<${upperDataKey}VO> get${upperDataKey}VOPage(Page<${upperDataKey}> ${dataKey}Page);
 
     Wrapper<${upperDataKey}> getQueryWrapper(${upperDataKey}QueryRequest ${dataKey}QueryRequest);
 

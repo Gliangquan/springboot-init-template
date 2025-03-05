@@ -16,6 +16,7 @@ import ${packageName}.utils.SqlUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class ${upperDataKey}ServiceImpl extends ServiceImpl<${upperDataKey}Mappe
     }
 
     @Override
-    public List<${upperDataKey}VO> get${upperDataKey}VO(List<${upperDataKey}> ${dataKey}List) {
+    public Page<${upperDataKey}VO> get${upperDataKey}VOPage(Page<${upperDataKey}> ${dataKey}Page) {
         if (CollUtil.isEmpty(${dataKey}List)) {
             return new ArrayList<>();
         }
@@ -48,12 +49,10 @@ public class ${upperDataKey}ServiceImpl extends ServiceImpl<${upperDataKey}Mappe
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "请求参数为空");
         }
         Long id = ${dataKey}QueryRequest.getId();
-        String status = ${dataKey}QueryRequest.getStatus();
         String sortField = ${dataKey}QueryRequest.getSortField();
         String sortOrder = ${dataKey}QueryRequest.getSortOrder();
         QueryWrapper<${upperDataKey}> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq(id != null, "id", id);
-        queryWrapper.eq(StringUtils.isNotBlank(status), "status", status);
         queryWrapper.orderBy(SqlUtils.validSortField(sortField), sortOrder.equals(CommonConstant.SORT_ORDER_ASC), sortField);
         return queryWrapper;
     }

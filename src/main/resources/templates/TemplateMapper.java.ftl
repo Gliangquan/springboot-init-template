@@ -2,8 +2,6 @@ package ${packageName}.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import ${packageName}.model.entity.${upperDataKey};
-import java.util.Date;
-import java.util.List;
 
 /**
 * ${dataName}数据库操作

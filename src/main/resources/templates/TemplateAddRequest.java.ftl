@@ -1,9 +1,9 @@
 package ${packageName}.model.dto.${dataKey};
 
 import lombok.Data;
-
 import java.io.Serializable;
-import java.util.List;
+import java.util.Date;
+
 
 /**
  * 创建${dataName}请求

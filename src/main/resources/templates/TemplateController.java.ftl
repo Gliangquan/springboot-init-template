@@ -56,8 +56,6 @@ public class ${upperDataKey}Controller {
         // todo 在此处将实体类和 DTO 进行转换
         ${upperDataKey} ${dataKey} = new ${upperDataKey}();
         BeanUtils.copyProperties(${dataKey}AddRequest, ${dataKey});
-        // 数据校验
-        ${dataKey}Service.valid${upperDataKey}(${dataKey}, true);
         // todo 填充默认值
         User loginUser = userService.getLoginUser(request);
         ${dataKey}.setUserId(loginUser.getId());
@@ -111,8 +109,6 @@ public class ${upperDataKey}Controller {
         // todo 在此处将实体类和 DTO 进行转换
         ${upperDataKey} ${dataKey} = new ${upperDataKey}();
         BeanUtils.copyProperties(${dataKey}UpdateRequest, ${dataKey});
-        // 数据校验
-        ${dataKey}Service.valid${upperDataKey}(${dataKey}, false);
         // 判断是否存在
         long id = ${dataKey}UpdateRequest.getId();
         ${upperDataKey} old${upperDataKey} = ${dataKey}Service.getById(id);
@@ -217,8 +213,6 @@ public class ${upperDataKey}Controller {
         // todo 在此处将实体类和 DTO 进行转换
         ${upperDataKey} ${dataKey} = new ${upperDataKey}();
         BeanUtils.copyProperties(${dataKey}EditRequest, ${dataKey});
-        // 数据校验
-        ${dataKey}Service.valid${upperDataKey}(${dataKey}, false);
         User loginUser = userService.getLoginUser(request);
         // 判断是否存在
         long id = ${dataKey}EditRequest.getId();

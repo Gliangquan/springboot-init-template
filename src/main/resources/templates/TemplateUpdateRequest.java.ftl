@@ -1,9 +1,8 @@
 package ${packageName}.model.dto.${dataKey};
 
 import lombok.Data;
-
+import java.util.Date;
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * 更新${dataName}请求

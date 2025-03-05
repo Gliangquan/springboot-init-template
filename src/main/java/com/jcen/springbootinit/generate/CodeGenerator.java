@@ -172,30 +172,33 @@ public class CodeGenerator {
             dataModel.put("columns", columns);
             dataModel.put("tableName", tableName);
 
-            // 生成 Controller
-            generateFile("TemplateController.java.ftl", String.format("%s/generator/controller/%sController.java", PROJECT_PATH, upperDataKey), dataModel);
+//            // 生成 Entity
+//            generateFile("TemplateEntity.java.ftl", String.format("%s/generator/model/entity/%s.java", PROJECT_PATH, upperDataKey), dataModel);
+//
+//            // 生成 VO
+//            generateFile("TemplateVO.java.ftl", String.format("%s/generator/model/vo/%sVO.java", PROJECT_PATH, upperDataKey), dataModel);
+//
+//            // 生成 DTO
+//            generateFile("TemplateAddRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sAddRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
+//            generateFile("TemplateQueryRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sQueryRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
+//            generateFile("TemplateEditRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sEditRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
+//            generateFile("TemplateUpdateRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sUpdateRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
+
+
+//            // 生成 Mapper 接口
+//            generateFile("TemplateMapper.java.ftl", String.format("%s/generator/mapper/%sMapper.java", PROJECT_PATH, upperDataKey), dataModel);
+//
+//            // 生成 Mapper XML 文件
+//            generateFile("TemplateMapper.xml.ftl", String.format("%s/generator/mapper/%sMapper.xml", PROJECT_PATH, upperDataKey), dataModel);
+
 
             // 生成 Service 接口和实现类
             generateFile("TemplateService.java.ftl", String.format("%s/generator/service/%sService.java", PROJECT_PATH, upperDataKey), dataModel);
             generateFile("TemplateServiceImpl.java.ftl", String.format("%s/generator/service/impl/%sServiceImpl.java", PROJECT_PATH, upperDataKey), dataModel);
 
-            // 生成 Entity
-            generateFile("TemplateEntity.java.ftl", String.format("%s/generator/model/entity/%s.java", PROJECT_PATH, upperDataKey), dataModel);
 
-            // 生成 VO
-            generateFile("TemplateVO.java.ftl", String.format("%s/generator/model/vo/%sVO.java", PROJECT_PATH, upperDataKey), dataModel);
-
-            // 生成 DTO
-            generateFile("TemplateAddRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sAddRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
-            generateFile("TemplateQueryRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sQueryRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
-            generateFile("TemplateEditRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sEditRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
-            generateFile("TemplateUpdateRequest.java.ftl", String.format("%s/generator/model/dto/%s/%sUpdateRequest.java", PROJECT_PATH, dataKey, upperDataKey), dataModel);
-
-            // 生成 Mapper 接口
-            generateFile("TemplateMapper.java.ftl", String.format("%s/generator/mapper/%sMapper.java", PROJECT_PATH, upperDataKey), dataModel);
-
-            // 生成 Mapper XML 文件
-            generateFile("TemplateMapper.xml.ftl", String.format("%s/generator/mapper/%sMapper.xml", PROJECT_PATH, upperDataKey), dataModel);
+//            生成 Controller
+//            generateFile("TemplateController.java.ftl", String.format("%s/generator/controller/%sController.java", PROJECT_PATH, upperDataKey), dataModel);
 
         } catch (Exception e) {
             System.err.println("生成代码失败：" + e.getMessage());

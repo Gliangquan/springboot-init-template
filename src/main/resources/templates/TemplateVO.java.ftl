@@ -35,8 +35,9 @@ public class ${upperDataKey}VO implements Serializable {
         }
         ${upperDataKey} ${dataKey} = new ${upperDataKey}();
         BeanUtils.copyProperties(${dataKey}VO, ${dataKey});
-        List<String> tagList = ${dataKey}VO.getTagList();
-        ${dataKey}.setTags(JSONUtil.toJsonStr(tagList));
+        // entityVo List 转为 entity String
+        // List<String> tagList = ${dataKey}VO.getTagList();
+        // ${dataKey}.setTags(JSONUtil.toJsonStr(tagList));
         return ${dataKey};
     }
 
@@ -52,7 +53,8 @@ public class ${upperDataKey}VO implements Serializable {
         }
         ${upperDataKey}VO ${dataKey}VO = new ${upperDataKey}VO();
         BeanUtils.copyProperties(${dataKey}, ${dataKey}VO);
-        ${dataKey}VO.setTagList(JSONUtil.toList(${dataKey}.getTags(), String.class));
+        // entity String 转为 entityVo List
+        // ${dataKey}VO.setTagList(JSONUtil.toList(${dataKey}.getTags(), String.class));
         return ${dataKey}VO;
         }
     }
